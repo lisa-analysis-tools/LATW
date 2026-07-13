@@ -76,6 +76,11 @@ multiple authors (human or agent) produce one coherent workshop.
 - NO `DataResidualArray` anywhere — it is a deprecated shim; always use
   the `DomainBase` signal classes (`TDSignal`/`FDSignal`/`WDMSignal`/
   `STFTSignal`).
+- **Prefer XYZ over AET.** The stock global fit works in XYZ (`tdi_chan=
+  "XYZ"`), so tutorials, sensitivity matrices (`XYZ2SensitivityMatrix`,
+  not `AET*`), and waveform outputs default to XYZ. Use AET *only* when the
+  section is specifically explaining what the A/E/T combination is (and
+  convert to XYZ afterward).
 - Do not teach retired/stale modules (see 00's do-not-use list).
 - Use installed packages only — no local helper modules in this repo.
 - Waveforms via the stock `lisatools.sources` classes (aligned with the
