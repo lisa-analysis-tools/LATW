@@ -1,59 +1,80 @@
-# LISA Analysis Tools Workshop (LATW)
+# LISA Analysis Tools Workshop (LATW) — development branch
 
-This repo houses the tutorial codes for the LISA Analysis Tools Workshop. The tutorials are stored in the [tutorials](tutorials/) directory. In that same directory, you will find the answer keys. Introductory talk recordings can be found [here](https://www.youtube.com/playlist?list=PLdWF50RX1STO2DbfkqlBbhhaDdLTETAE7). PDF versions of the slides are in [intro_talks](intro_talks/). 
+This is the **`dev` branch** of LATW: the tutorial series for the
+**development state** of the LISA Analysis Tools stack — the versions
+installed by `LISAanalysistools/install.sh` (GPUBackendTools@spline,
+Eryn@dev, LISAanalysistools@dev, BBHx@dev, GBGPU@dev,
+FastEMRIWaveforms@gpu_backend, phentax).
 
-If you participate in a LAT workshop or work through the tutorials, please fill out this [survey](https://forms.gle/DFEBFRHSD1HRZ4HU9). We would really appreciate it!
+If you want the workshop tutorials for the **pip-released** packages
+(`pip install lisaanalysistools eryn gbgpu bbhx fastemriwaveforms ...`),
+use the [`main` branch](https://github.com/lisa-analysis-tools/LATW/tree/main)
+instead. That is the branch policy of this repo: `main` ↔ pip releases,
+`dev` ↔ the install.sh development stack (see [CLAUDE.md](CLAUDE.md)).
 
-The tutorials are numbered as follows:
+## Installation (dev stack — no Colab, no pip releases)
 
-0) Introductory tutorial for helpful Python concepts related to the successful usage of LISA Analysis Tools packages. This also gives the user a flavor of what the tutorials are like. 
+The dev tutorials need the editable development installation:
 
-1) Introduction to [LISA Analysis Tools](https://mikekatz04.github.io/LISAanalysistools) (`lisatools`). This includes setting up LISA sensitivity information, using data analysis classes, calculating inner products, SNRs, and Likelihoods. 
-
-2) EMRIs and LISA Response: build EMRI waveforms wrapped in a time-domain LISA response function. This combines the use of [Fast EMRI Waveforms](https://bhptoolkit.org/FastEMRIWaveforms/html/index.html) (`few`) and [`fastlisaresponse`](https://mikekatz04.github.io/lisa-on-gpu).
-
-3) MCMC with Eryn: use various **fixed-dimensional** MCMC techniques with the [Eryn](https://mikekatz04.github.io/Eryn) (`eryn`) sampler package.
-
-4) MCMC and MBHBs: use lessons learned in Eryn to build up to a full MCMC with Massive Black Hole Binaries. [BBHx](https://mikekatz04.github.io/BBHx) (`bbhx`) is used to produce LISA TDI waveforms. We also use that package to perform the analysis with the "Heterodyning" technique. 
-
-5) RJMCMC with Eryn: perform trans-dimensional or Reversible Jump MCMC with the [Eryn](https://mikekatz04.github.io/Eryn) (`eryn`) sampler package. 
-
-6) Galactic Binaries: analyze Galactic binary waveforms and use them in MCMC and RJMCMC analyses. We will use [GBGPU](https://mikekatz04.github.io/GBGPU) to produce waveforms using the FastGB waveform construction method in the frequency domain. 
-
-There is also a challenge problem on designing a mini global fit. 
-
-
-# Installation
-
-All tutorials can be run in Google Colab. There is a cell at the beginning of each tutorial that you can uncomment and run that will install necessary packages (for each tutorial) into the Colab environment. 
-
-LATW leverages conda environments to install and use necessary packages. If you do not have [Anaconda](https://www.anaconda.com/download) or [miniconda](https://docs.anaconda.com/free/miniconda/index.html) installed, you must do this first and load your `base` conda environment. 
-
-First, clone the repo and `cd` to the `LATW` directory.:
 ```
-git clone https://github.com/mikekatz04/LATW.git
-cd LATW/
+git clone https://github.com/lisa-analysis-tools/lisa-analysis-tools.git LISAanalysistools
+bash LISAanalysistools/install.sh
 ```
 
-Install all packages necessary for the tutorials by running:
-```
-bash install.sh
-```
-Running `bash install.sh -h` will also give you some basic install options. 
+This clones the sibling repos (including this one) side by side, checks
+out the development branches, and editable-installs everything. Then
+`jupyter lab` in `LATW/tutorials/` and start with `00`.
 
-If you want more flexibility (you will need Python 3.12), you can install each package with `pip`: `numpy`, `scipy`, `matplotlib`, `pandas`, `eryn`, `corner`, `chainconsumer`, `lisaanalysistools`, `fastlisaresponse`, `gbgpu`, `bbhx`, `fastemriwaveforms`.
+## The tutorials
 
-Once installation is completed, `cd` to the tutorial directory and run `jupyter lab`. Select your tutorial and begin!
+**Informational track** (`tutorials/`) — instructive, fully executed;
+each section opens with a TL;DR and one minimal cell, with "Going deeper"
+subsections for pipeline developers:
 
-# Code of Conduct
+- `00` Setup & Atlas — installation, how to use the tutorials + docs, and
+  a map of the whole ecosystem (what lives where and how to find it).
+- `01` A global fit in four lines — run a small stock global fit, then
+  pull every structured product out of it and see every knob.
+- `02` Foundations — domains (TD/FD/STFT/WDM), sensitivity, the detector,
+  and `AnalysisContainer` (from one SNR to the global fit's residuals).
+- `03` Response & TDI — from a waveform to a LISA data stream.
+- `04` Source waveforms — GB, MBHB, EMRI, SOBHB with the stock classes
+  (exactly the way the global fit builds them).
+- `05` Sampling with Eryn — from a toy MCMC to the global fit's engine.
+- `06` Backends & the dev workflow — Python/C++/CUDA/JAX, install.sh,
+  and how to develop for the stack.
+- `07` Stock global fits in depth — data processors, settings, recipes,
+  and writing your own Move-level module.
+- `08` Stock global fit gallery — a deep demo of every stock fit.
 
-In [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), you will find the workshop code of conduct. It is heavily based on the LISA Consortium code of conduct. We strongly advise anyone who uses these tutorials in any way to follow this code of conduct. 
+**Exercise track** (`tutorials/further/`) — the workshop series proper
+(Tasks + Questions; answers in `further/answers/`). Baseline: if you want
+to do a real research project on LISA data analysis, you should generally
+understand and be able to work through these tutorials.
 
-# Authors
+- `X1` Sensitivity, SNR, inner products & likelihoods
+- `X2` EMRIs + response/TDI (ends with a standalone EMRI MCMC)
+- `X3` Fixed-dimensional MCMC with Eryn
+- `X4` MBHBs & MCMC (with heterodyned/fast likelihoods)
+- `X5` RJMCMC with Eryn
+- `X6` Galactic binaries: MCMC & RJ (with the fast GB likelihood)
+- `X7` Stellar-origin BHBs
+- `X8` A mini global fit (build, swap parts, write your own module)
+
+Contributor conventions (cell skeleton, answer markers, runtime/memory
+budgets): [tutorials/STYLE.md](tutorials/STYLE.md). Execute everything via
+`scripts/run_all.sh` (sequential, thread-pinned).
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), based on the LISA Consortium
+code of conduct.
+
+## Authors
 
 * **Michael Katz**
 
-# Contributors / Organizing Committee
+## Contributors / Organizing Committee
 
 * Nikos Karnesis
 * Natalia Korsakova
@@ -62,4 +83,3 @@ In [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), you will find the workshop code of 
 * Rodrigo Tenorio
 * Durgesh Rai
 * Christian Chapman-Bird
-
