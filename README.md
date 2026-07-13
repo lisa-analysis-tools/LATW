@@ -45,6 +45,54 @@ If you want more flexibility (you will need Python 3.12), you can install each p
 
 Once installation is completed, `cd` to the tutorial directory and run `jupyter lab`. Select your tutorial and begin!
 
+# Last validated against
+
+These tutorials were last validated on **2026-07-13** (Python 3.12) against the
+following pip releases:
+
+| Package | Version | | Package | Version |
+|---|---|---|---|---|
+| lisaanalysistools | 1.2.5 | | fastemriwaveforms | 2.0.0 |
+| fastlisaresponse | 1.1.11 | | gbgpu | 1.2.4 |
+| bbhx | 1.2.3 | | eryn | 1.2.6 |
+| gpubackendtools | 0.1.1 | | corner | 2.3.0 |
+| chainconsumer | 1.3.0 | | mpmath | 1.4.1 |
+| numpy | 2.2.6 | | scipy | 1.18.0 |
+| numba | 0.61.2 | | llvmlite | 0.44.0 |
+
+Tutorials 0, 1, 3, 5, and 6 run clean end-to-end. Tutorial 2 was updated to the
+Fast EMRI Waveforms **2.0** API (see below).
+
+Install note: `install.sh` now pins `numba<0.62`. Unpinned, pip resolves numba
+0.62 → llvmlite 0.48, which is source-only on macOS x86_64 / py3.12 and fails to
+build ("llvmlite needs CMake tools to build") in the stock conda env.
+
+## FEW 2.0 update (Tutorial 2)
+
+Fast EMRI Waveforms 2.0 replaced the pre-2.0 waveform/trajectory classes. Tutorial 2
+and `pnbeyondGR_example.py` now use the 2.0 API: custom trajectories subclass
+`few.trajectory.ode.base.ODEBase` (implementing `evaluate_rhs`, with the integrator
+applying the mass-ratio scaling), custom waveforms subclass
+`SphericalHarmonicWaveformBase` + `SchwarzschildEccentric` with
+`inspiral_module=EMRIInspiral` / `amplitude_module=AmpInterpSchwarzEcc`, `use_gpu=`
+is replaced by `force_backend`, and mode selection uses `mode_selection=`.
+
+## Known issue — LISA response on macOS x86_64
+
+On macOS x86_64 with the versions above, two release/packaging defects currently
+block the LISA-response sections of Tutorials 2 and 4 and the challenge problem:
+
+1. **Vendored-runtime clash.** Each delocated wheel bundles its own
+   `libstdc++`/`libgcc`/`libgfortran`; loading two together (e.g. `few` +
+   `fastlisaresponse`, or `bbhx`) aborts with `SIGABRT`. It can be worked around
+   by pointing every package's `.dylibs/{libstdc++.6,libgcc_s.1.1,libgfortran.5}.dylib`
+   at a single shared copy.
+2. **`lisatools` orbit pointer.** After (1), `lisatools` 1.2.5
+   `detector.Orbits.ptr` returns `self.pycppdetector.ptr`, but the compiled
+   `OrbitsWrapCPU` exposes no `ptr`, so the `bbhx` and `fastlisaresponse` response
+   kernels raise `TypeError: an integer is required`. This has no in-notebook
+   (release-compatible) workaround and needs a fix in the `lisaanalysistools` wheel.
+
 # Code of Conduct
 
 In [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), you will find the workshop code of conduct. It is heavily based on the LISA Consortium code of conduct. We strongly advise anyone who uses these tutorials in any way to follow this code of conduct. 
