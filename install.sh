@@ -92,6 +92,12 @@ echo "pip: $pip_here"
 
 machine=$(uname -m)
 
+# Pin numba<0.62 so pip resolves llvmlite<0.45, which ships prebuilt wheels.
+# numba>=0.62 pulls llvmlite 0.48, which is source-only on macOS x86_64 / py3.12
+# and fails to build ("llvmlite needs CMake tools to build") since the conda env
+# has neither CMake nor a matching LLVM. Validated with numba 0.61.2 / llvmlite 0.44.0.
+"$pip_here" install "numba<0.62"
+
 "$python_here" -m pip install lisaanalysistools
 "$python_here" -m pip install fastlisaresponse
 "$python_here" -m pip install bbhx
