@@ -43,6 +43,9 @@ Running `bash install.sh -h` will also give you some basic install options.
 
 If you want more flexibility (you will need Python 3.12), you can install each package with `pip`: `numpy`, `scipy`, `matplotlib`, `pandas`, `eryn`, `corner`, `chainconsumer`, `lisaanalysistools`, `fastlisaresponse`, `gbgpu`, `bbhx`, `fastemriwaveforms`.
 
+**Windows:** there are no Windows wheels for the compiled packages, so they are built from source;
+see [docs/WINDOWS.md](docs/WINDOWS.md).
+
 Once installation is completed, `cd` to the tutorial directory and run `jupyter lab`. Select your tutorial and begin!
 
 # Last validated against
