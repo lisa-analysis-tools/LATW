@@ -19,6 +19,9 @@ if __name__ == "__main__":
         previous_cell_nothing = False
         pop_inds = []
         for i, cell in enumerate(data["cells"]):
+            # nbformat allows source as one string; normalise to a list of lines
+            if isinstance(cell["source"], str):
+                cell["source"] = cell["source"].splitlines(keepends=True)
             remove_cell_contents = False
             for line in cell["source"]:
                 if "# clear" in line.lower():
